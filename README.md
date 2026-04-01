@@ -1,4 +1,4 @@
-# PFSD Assignment Management
+# OASS - Online Assignment Submission System
 
 A small Flask + SQLAlchemy web app for student assignment upload and faculty grading.
 
@@ -101,3 +101,8 @@ A small Flask + SQLAlchemy web app for student assignment upload and faculty gra
 - Improve file handling  
 - Use environment variables  
 - Add database migrations  
+## Tech Stack
+- Python (Flask)
+- SQLAlchemy
+- MySQL
+- HTML, CSS
