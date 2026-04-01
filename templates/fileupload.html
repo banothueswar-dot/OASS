@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+</head>
+<body>
+
+<h2>Student Dashboard</h2>
+
+<h3>Assignments</h3>
+
+{% for a in assignments %}
+    <div style="border:1px solid black; padding:10px; margin:10px;">
+
+        <p><b>Title:</b> {{ a.title }}</p>
+        <p><b>Deadline:</b> {{ a.deadline }}</p>
+         
+        <form action="/upload/{{ a.id }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit">Upload</button>
+        </form>
+
+    </div>
+{% endfor %}
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Faculty Dashboard</title>
+
+<style>
+body {
+    font-family: 'Segoe UI';
+    background: linear-gradient(to right, #dbeafe, #f0f9ff);
+    margin: 0;
+}
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+h2 {
+    text-align: center;
+}
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+button {
+    background: #007bff;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background: #0056b3;
+}
+.delete-btn {
+    background: red;
+}
+
+.delete-btn:hover {
+    background: darkred;
+}
+.sub-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+.logout {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: white;
+    background: #dc3545;
+    padding: 10px;
+    border-radius: 6px;
+    width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.logout:hover {
+    background: #a71d2a;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2>Faculty Dashboard</h2>
+
+<div class="card">
+<h3>Create Assignment</h3>
+
+<form method="POST">
+    <label>Name</label>
+    <input type="text" name="name" required>
+
+    <label>Title</label>
+    <input type="text" name="title" required>
+
+    <label>Description</label>
+    <input type="text" name="description">
+
+    <label>Deadline</label>
+    <input type="date" name="deadline" required>
+
+    <button type="submit">Create</button>
+</form>
+</div>
+
+<div class="card">
+<h3>Your Assignments</h3>
+
+{% for a in assignments %}
+<div>
+
+    <p><b>Name:</b> {{ a.name }}</p>
+    <p><b>Title:</b> {{ a.title }}</p>
+    <p><b>Description:</b> {{ a.description }}</p>
+    <p><b>Deadline:</b> {{ a.deadline }}</p>
+
+    <a href="/delete_assignment/{{ a.id }}">
+        <button type="button" class="delete-btn">Delete</button>
+    </a>
+
+    <h4>Submissions:</h4>
+
+    {% for s in a.submissions %}
+    <div class="sub-box">
+
+        <p>
+            <strong>Student ID:</strong> {{ s.student.id }} <br>
+            <strong>Student Name:</strong> {{ s.student.name }} <br>
+            <strong>File:</strong>
+            <a href="/download/{{ s.id }}">{{ s.file_path }}</a>
+        </p>
+
+        <form action="/grade/{{ s.id }}" method="POST">
+            
+            <label>Marks</label>
+            <input type="number" name="marks"
+                   value="{{ s.grade.marks if s.grade else '' }}" required>
+
+            <label>Feedback</label>
+            <input type="text" name="feedback"
+                   value="{{ s.grade.feedback if s.grade else '' }}">
+
+            <button type="submit">
+                {{ 'Update Grade' if s.grade else 'Submit Grade' }}
+            </button>
+
+        </form>
+
+        {% if s.grade %}
+        <p style="color:green;">
+            ✔ Saved: {{ s.grade.marks }} - {{ s.grade.feedback }}
+        </p>
+        {% endif %}
+
+    </div>
+    {% else %}
+        <p>No submissions yet</p>
+    {% endfor %}
+
+    <hr>
+
+</div>
+{% else %}
+<p>No assignments</p>
+{% endfor %}
+
+</div>
+
+<a href="/logout" class="logout">Logout</a>
+
+</div>
+
+</body>
+</html>

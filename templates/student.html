@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eef2f7;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    h3 {
+        color: #444;
+        margin-bottom: 15px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .assignment {
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+
+    input[type="file"] {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .submitted {
+        color: green;
+        font-weight: bold;
+    }
+
+    .not-submitted {
+        color: red;
+        font-weight: bold;
+    }
+
+    .grade-box {
+        margin-top: 10px;
+        background: #ecf7ee;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #b6e3c4;
+        color: #1a5d2b;
+    }
+
+    .pending {
+        color: orange;
+        font-weight: bold;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .logout {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        text-decoration: none;
+        color: white;
+        background: #dc3545;
+        padding: 10px;
+        border-radius: 6px;
+        width: 120px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .logout:hover {
+        background: #a71d2a;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Student Dashboard</h2>
+
+<div class="card">
+    <h3>Assignments</h3>
+
+    {% for a in assignments %}
+    <div class="assignment">
+        <p>
+            <strong>Name:</strong> {{ a.name }}<br>
+            <strong>Title:</strong> {{ a.title }}<br>
+            <strong>Description:</strong> {{ a.description }}<br>
+            <strong>Deadline:</strong> {{ a.deadline }}
+        </p>
+
+        {% if a.id in submissions_by_assignment %}
+            {% set sub = submissions_by_assignment[a.id] %}
+
+            <p class="submitted">Submitted: Yes</p>
+            <p>File: <a href="/download/{{ sub.id }}">{{ sub.file_path }}</a></p>
+
+            {% if sub.grade %}
+            <div class="grade-box">
+                <strong>Marks:</strong> {{ sub.grade.marks }}<br>
+                <strong>Feedback:</strong> {{ sub.grade.feedback }}
+            </div>
+            {% else %}
+            <p class="pending">Marks: Pending</p>
+            {% endif %}
+
+        {% else %}
+            <p class="not-submitted">Submitted: No</p>
+        {% endif %}
+
+        <form action="/upload/{{ a.id }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <br>
+            <button type="submit">Upload</button>
+        </form>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<a href="/logout" class="logout">Logout</a>
+
+</div>
+
+</body>
+</html>
